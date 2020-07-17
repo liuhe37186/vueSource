@@ -44,7 +44,7 @@ export class Observer {
     this.dep = new Dep()
     this.vmCount = 0
     def(value, '__ob__', this)
-    if (Array.isArray(value)) {
+    if (Array.isArray(value)) {//如果是数组
       if (hasProto) {
         protoAugment(value, arrayMethods)
       } else {
@@ -52,7 +52,7 @@ export class Observer {
       }
       this.observeArray(value)
     } else {
-      this.walk(value)
+      this.walk(value)//数据是对象
     }
   }
 
@@ -64,7 +64,7 @@ export class Observer {
   walk (obj: Object) {
     const keys = Object.keys(obj)
     for (let i = 0; i < keys.length; i++) {
-      defineReactive(obj, keys[i])
+      defineReactive(obj, keys[i])//重新响应式
     }
   }
 
@@ -121,7 +121,7 @@ export function observe (value: any, asRootData: ?boolean): Observer | void {
     Object.isExtensible(value) &&
     !value._isVue
   ) {
-    ob = new Observer(value)
+    ob = new Observer(value)//对数据进行观测
   }
   if (asRootData && ob) {
     ob.vmCount++
@@ -160,10 +160,10 @@ export function defineReactive (
     get: function reactiveGetter () {
       const value = getter ? getter.call(obj) : val
       if (Dep.target) {
-        dep.depend()
+        dep.depend()//收集依赖 watcher
         if (childOb) {
-          childOb.dep.depend()
-          if (Array.isArray(value)) {
+          childOb.dep.depend()//收集依赖
+          if (Array.isArray(value)) { 
             dependArray(value)
           }
         }
